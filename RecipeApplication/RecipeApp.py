@@ -77,8 +77,9 @@ class Textbox(FloatLayout):
             size_hint=(0.2, 0.1),
             pos_hint={'center_x': 0.5, 'center_y': 0.7}
         )
-
-
+    def on_enter(instance, value):
+	print ('User pressed enter in', instance)
+		
 class InputScreen(FloatLayout):
     def __init__(self):
         # ensures that important stuff isn't overwritten
@@ -93,6 +94,8 @@ class InputScreen(FloatLayout):
         )
         searchbox = Textbox()
         self.add_widget(searchbox.info)
+        searchbox.info.bind(on_text_validate=searchbox.on_enter)
+
 
 
 class RecipeApp(App):
