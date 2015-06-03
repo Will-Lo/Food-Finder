@@ -67,33 +67,38 @@ class SearchResult(Widget):
     pass
 
 
-def on_focus(instance, value):
-    if value:
-        print('User focused', instance)
-    else:
-        print('User defocused', instance)
-textbox = TextInput(size_hint=(0.2, 0.1), pos_hint={'center_x': 0.5, 'center_y': 0.6})
-textbox.bind(focus=on_focus)
-
-
-class Input_Screen(FloatLayout):
+class Textbox(FloatLayout):
     def __init__(self):
         # ensures that important stuff isn't overwritten
-        super(Input_Screen, self).__init__()
+        super(Textbox, self).__init__()
+
+        self.info = TextInput(
+            multiline=False,
+            size_hint=(0.2, 0.1),
+            pos_hint={'center_x': 0.5, 'center_y': 0.7}
+        )
+
+
+class InputScreen(FloatLayout):
+    def __init__(self):
+        # ensures that important stuff isn't overwritten
+        super(InputScreen, self).__init__()
 
         self.add_widget(
             Button(
                 text="search",
                 size_hint=(0.2, 0.1),
-                pos_hint={'center_x':0.5, 'center_y':0.3}
+                pos_hint={'center_x': 0.5, 'center_y': 0.3}
             )
         )
-        self.add_widget(textbox)
+        searchbox = Textbox()
+        self.add_widget(searchbox.info)
 
 
 class RecipeApp(App):
     def build(self):
-        return Input_Screen()
+        return InputScreen()
+
 
 
 if __name__ == '__main__':
