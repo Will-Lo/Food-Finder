@@ -82,21 +82,27 @@ class Textbox(FloatLayout):
     
     def on_text(instance, value):
         print ('The widget', instance, 'have:', value)
-    
-        
+
+
+class SearchButton(FloatLayout):
+    def __init__(self):
+        # ensures that important stuff isn't overwritten
+        super(SearchButton, self).__init__()
+
+        self.info = Button(
+            text="search",
+            size_hint=(0.2, 0.1),
+            pos_hint={'center_x': 0.5, 'center_y': 0.3}
+        )
+
+
 class InputScreen(FloatLayout):
     def __init__(self):
         # ensures that important stuff isn't overwritten
         super(InputScreen, self).__init__()
 
-        self.add_widget(
-            Button(
-                text="search",
-                size_hint=(0.2, 0.1),
-                pos_hint={'center_x': 0.5, 'center_y': 0.3}
-            )
-        )
-        
+        button = SearchButton()
+        self.add_widget(button.info)
         searchbox = Textbox()
         self.add_widget(searchbox.info)
         searchbox.info.bind(on_text_validate=searchbox.on_enter)
