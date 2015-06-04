@@ -61,7 +61,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-
+from kivy.uix.image import Image
 
 class SearchResult(Widget):
     pass
@@ -78,8 +78,12 @@ class Textbox(FloatLayout):
             pos_hint={'center_x': 0.5, 'center_y': 0.7}
         )
     def on_enter(instance, value):
-	print ('User pressed enter in', instance)
-		
+        print ('User pressed enter in', instance)
+    
+    def on_text(instance, value):
+        print ('The widget', instance, 'have:', value)
+    
+        
 class InputScreen(FloatLayout):
     def __init__(self):
         # ensures that important stuff isn't overwritten
@@ -92,10 +96,11 @@ class InputScreen(FloatLayout):
                 pos_hint={'center_x': 0.5, 'center_y': 0.3}
             )
         )
+        
         searchbox = Textbox()
         self.add_widget(searchbox.info)
         searchbox.info.bind(on_text_validate=searchbox.on_enter)
-
+        #searchbox.info.bind(text=searchbox.on_text)
 
 
 class RecipeApp(App):
