@@ -55,7 +55,7 @@ def get_image(recipe_list):
 
 
 import kivy
-kivy.require('1.8.0')
+kivy.require('1.9.0')
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.floatlayout import FloatLayout
@@ -67,21 +67,21 @@ class SearchResult(Widget):
     pass
 
 
-class Textbox(FloatLayout):
+class Textbox(TextInput):
     def __init__(self):
         # ensures that important stuff isn't overwritten
         super(Textbox, self).__init__()
 
         self.info = TextInput(
             multiline=False,
-            size_hint=(0.2, 0.1),
-            pos_hint={'center_x': 0.5, 'center_y': 0.7}
+            size_hint = (0.3,0.1),
+            pos_hint = {'center_x':0.5, 'center_y': 0.6}
         )
     def on_enter(instance, value):
         print ('User pressed enter in', instance)
     
-    def on_text(instance, value):
-        print ('The widget', instance, 'have:', value)
+    #def on_text(instance, value):
+    #    print ('The widget', instance, 'have:', value)
 
 
 class SearchButton(FloatLayout):
