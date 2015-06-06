@@ -91,6 +91,10 @@ class SearchButton(FloatLayout):
             size_hint=(0.2, 0.1),
             pos_hint={'center_x': 0.5, 'center_y': 0.3}
         )
+    def on_touch_down(self, touch):
+        if self.collide_point:
+            print('Touched!')
+	
 
 
 class InputScreen(FloatLayout):
@@ -99,17 +103,21 @@ class InputScreen(FloatLayout):
         super(InputScreen, self).__init__()
 
         button = SearchButton()
-        self.add_widget(button.info)
         searchbox = Textbox()
+		
+        self.add_widget(button.info)
         self.add_widget(searchbox.info)
+        
         searchbox.info.bind(on_text_validate=searchbox.on_enter)
-
+        button.info.bind(on_release=button.on_touch_down)
+		
+		
 
 class RecipeApp(App):
     def build(self):
         return InputScreen()
 
-
+		
 
 if __name__ == '__main__':
     RecipeApp().run()
