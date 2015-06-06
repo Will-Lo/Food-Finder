@@ -78,10 +78,7 @@ class Textbox(TextInput):
             pos_hint = {'center_x':0.5, 'center_y': 0.6}
         )
     def on_enter(instance, value):
-        print ('User pressed enter in', instance)
-    
-    #def on_text(instance, value):
-    #    print ('The widget', instance, 'have:', value)
+        print value.text
 
 
 class SearchButton(FloatLayout):
@@ -106,7 +103,6 @@ class InputScreen(FloatLayout):
         searchbox = Textbox()
         self.add_widget(searchbox.info)
         searchbox.info.bind(on_text_validate=searchbox.on_enter)
-        #searchbox.info.bind(text=searchbox.on_text)
 
 
 class RecipeApp(App):
