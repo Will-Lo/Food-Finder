@@ -82,8 +82,11 @@ class Textbox(Widget):
 	
 	def on_enter(instance, value):
 		ingredient = value.text
+		recipe_list = call_api(ingredient)
+		recipe_title = get_recipe_title(recipe_list)
 		print ingredient
-		return ingredient
+		print recipe_title
+		return recipe_title
 		
 
 class SearchButton(Widget):
