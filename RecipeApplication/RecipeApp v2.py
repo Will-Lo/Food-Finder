@@ -83,8 +83,13 @@ Builder.load_string('''
 			pos_hint: {'center_x':0.5, 'center_y':0.7}
 			size_hint: 0.4,0.1
 			multiline: False
-			on_text_validate: print self.text
+			on_text_validate: 
+				print self.text
+				root.food_search()
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'results'
 
+				
 <ResultsScreen>:
 	BoxLayout:
 		Button:
@@ -92,12 +97,19 @@ Builder.load_string('''
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'search'
+		Button:
+			id: 'result_1'
+			text: root.show_results()
+			on_press:
+				print root.show_results()
+				
 ''')
+
+global_food_list = [] #Global list to keep all found recipes without repeated api calls
 
 class SearchScreen(Screen):
 	
 	food = StringProperty()
-	
 	#def return_text(self):
 		#self.food = self.ids.textbox.text
 		#print self.food
@@ -105,10 +117,21 @@ class SearchScreen(Screen):
 	def food_search(self):
 		self.food = self.ids.textbox.text
 		recipe_list = call_api(self.food)
-		print get_recipe_title(recipe_list)
+		print get_recipe_title(recipe_list)		
+
+		for food in get_recipe_title(recipe_list):
+			global_food_list.append(food)
+		return get_recipe_title(recipe_list)
+
+
 
 class ResultsScreen(Screen):
-	pass
+	def show_results(self):
+		return str(global_food_list)
+		#food_list = SearchScreen().food_search() #Instantiated method - Obsolete for now, but keep here
+		#self.ids.result_1.text = global_food_list[index]
+
+
 
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
