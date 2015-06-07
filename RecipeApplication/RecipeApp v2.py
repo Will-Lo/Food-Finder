@@ -57,12 +57,14 @@ def get_image(recipe_list):
 import kivy
 kivy.require('1.9.0')
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.properties import StringProperty
+from kivy.uix.screenmanager import ScreenManager, Screen
 
 Builder.load_string('''
 <SearchScreen>:
@@ -72,19 +74,27 @@ Builder.load_string('''
 			text: 'Search!'
 			pos_hint: {'center_x':0.5, 'center_y':0.3}
 			size_hint: 0.4, 0.2
-			on_press: root.food_search()
-
+			on_press: 
+				root.food_search()
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'results'
 		TextInput:
 			id: textbox
 			pos_hint: {'center_x':0.5, 'center_y':0.7}
 			size_hint: 0.4,0.1
 			multiline: False
 			on_text_validate: print self.text
-				
-			
+
+<ResultsScreen>:
+	BoxLayout:
+		Button:
+			text: 'Go back to search'
+			on_press:
+				root.manager.transition.direction = 'right'
+				root.manager.current = 'search'
 ''')
 
-class SearchScreen(FloatLayout):
+class SearchScreen(Screen):
 	
 	food = StringProperty()
 	
@@ -97,10 +107,18 @@ class SearchScreen(FloatLayout):
 		recipe_list = call_api(self.food)
 		print get_recipe_title(recipe_list)
 
+class ResultsScreen(Screen):
+	pass
+
+sm = ScreenManager()
+sm.add_widget(SearchScreen(name='search'))
+sm.add_widget(ResultsScreen(name='results'))
+	
+	
 class RecipeApp(App):
 
 	def build(self):
-		return SearchScreen()
+		return sm
 		
 if __name__=='__main__':
 	RecipeApp().run()
