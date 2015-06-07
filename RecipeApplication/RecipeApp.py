@@ -62,12 +62,13 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image
+from kivy.properties import ObjectProperty
 
 class SearchResult(Widget):
 	pass
 
 
-class Textbox(TextInput):
+class Textbox(Widget):
 	def __init__(self):
 		# ensures that important stuff isn't overwritten
 		super(Textbox, self).__init__()
@@ -77,11 +78,15 @@ class Textbox(TextInput):
 			size_hint = (0.3,0.1),
 			pos_hint = {'center_x':0.5, 'center_y': 0.6}
 		)
+	ingredient = ObjectProperty('')
+	
 	def on_enter(instance, value):
-		print value.text
-		return value.text
+		ingredient = value.text
+		print ingredient
+		return ingredient
+		
 
-class SearchButton(FloatLayout):
+class SearchButton(Widget):
 	def __init__(self):
 		# ensures that important stuff isn't overwritten
 		super(SearchButton, self).__init__()
@@ -91,20 +96,23 @@ class SearchButton(FloatLayout):
 			size_hint=(0.2, 0.1),
 			pos_hint={'center_x': 0.5, 'center_y': 0.3}
 		)
-		self.food = ''
+	pressed = ObjectProperty(False)
 		
-	def on_touch_down(self, touch):
+	def on_touch_down(self, touch, pos):
 		if self.collide_point:
 			print 'Touched!'
-			recipe_list = call_api(self.food)
-			recipe_title = get_recipe_title(recipe_list)
-			print recipe_title
+			pressed = True
+			#recipe_list = call_api('banana')
+			#recipe_title = get_recipe_title(recipe_list)
+			#print recipe_title
+			return True
+		return super(SearchButton, self).on_touch_down(touch)
 
 
 class InputScreen(FloatLayout):
-	def __init__(self):
+	def __init__(self, **kwargs):
 		# ensures that important stuff isn't overwritten
-		super(InputScreen, self).__init__()
+		super(InputScreen, self).__init__(**kwargs)
 
 		#create objects
 		button = SearchButton()
@@ -114,14 +122,19 @@ class InputScreen(FloatLayout):
 		self.add_widget(button.info)
 		self.add_widget(searchbox.info)
 		
-		ingredient = searchbox.info.bind(on_text_validate=searchbox.on_enter)
-
-		button.food = 'banana'
-		button.info.bind(on_release=button.on_touch_down)
+		searchbox.info.bind(on_text_validate=searchbox.on_enter)
+		button.bind(pressed=self.btn_pressed)
+	
+	def btn_pressed(self, touch):
+		food_input = searchbox.ingredient
+		print food_input
+		return True
+		
 		
 		
 class RecipeApp(App):
 	def build(self):
+		
 		return InputScreen()
 		
 
