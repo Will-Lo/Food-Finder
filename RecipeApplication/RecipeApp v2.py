@@ -57,7 +57,7 @@ def get_image(recipe_list):
 import kivy
 kivy.require('1.9.0')
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -89,16 +89,46 @@ Builder.load_string('''
 				
 <ResultsScreen>:
 	on_pre_enter: root.show_results()
-	BoxLayout:
+	GridLayout:
+		padding:10
+		cols:4
+		rows:3
+		Label:
+			text_size: self.size
+			text: root.recipe1
+		Label:
+			text_size: self.size
+			text: root.recipe2
+		Label:
+			text_size: self.size
+			text: root.recipe3
+		Label:
+			text_size: self.size
+			text: root.recipe4
+		Label:
+			text_size: self.size
+			text: root.recipe5
+		Label:
+			text_size: self.size
+			text: root.recipe6
+		Label:
+			text_size: self.size
+			text: root.recipe7
+		Label:
+			text_size: self.size
+			text: root.recipe8
+		Label:
+			text_size: self.size
+			text: root.recipe9
+		Label:
+			text_size: self.size
+			text: root.recipe10
 		Button:
 			text: 'Go back to search'
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'search'
-		Label:
-			id: 'result_1'
-			text: str(root.title_list)
-''')
+''')		
 
 food_input = "" #Global variable to keep all found recipes without repeated api calls
 
@@ -111,14 +141,34 @@ class SearchScreen(Screen):
 class ResultsScreen(Screen):
 
 	title_list = ListProperty()
-
+	
+	# it's hard coding time
+	recipe1 = StringProperty()
+	recipe2 = StringProperty()
+	recipe3 = StringProperty()
+	recipe4 = StringProperty()
+	recipe5 = StringProperty()
+	recipe6 = StringProperty()
+	recipe7 = StringProperty()
+	recipe8 = StringProperty()
+	recipe9 = StringProperty()
+	recipe10 = StringProperty()
+	
 	def show_results(self):
 		global food_input
 		recipe_list = call_api(food_input)
 		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
-		return self.title_list
-		#self.ids.result_1.text = food_input
+		self.recipe1 = self.title_list[0]
+		self.recipe2 = self.title_list[1]
+		self.recipe3 = self.title_list[2]
+		self.recipe4 = self.title_list[3]
+		self.recipe5 = self.title_list[4]
+		self.recipe6 = self.title_list[5]
+		self.recipe7 = self.title_list[6]
+		self.recipe8 = self.title_list[7]
+		self.recipe9 = self.title_list[8]
+		self.recipe10 = self.title_list[9]
 		
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
