@@ -95,34 +95,34 @@ Builder.load_string('''
 		rows:3
 		Label:
 			text_size: self.size
-			text: root.recipe1
+			text: root.title_list[0]
 		Label:
 			text_size: self.size
-			text: root.recipe2
+			text: root.title_list[1]
 		Label:
 			text_size: self.size
-			text: root.recipe3
+			text: root.title_list[2]
 		Label:
 			text_size: self.size
-			text: root.recipe4
+			text: root.title_list[3]
 		Label:
 			text_size: self.size
-			text: root.recipe5
+			text: root.title_list[4]
 		Label:
 			text_size: self.size
-			text: root.recipe6
+			text: root.title_list[5]
 		Label:
 			text_size: self.size
-			text: root.recipe7
+			text: root.title_list[6]
 		Label:
 			text_size: self.size
-			text: root.recipe8
+			text: root.title_list[7]
 		Label:
 			text_size: self.size
-			text: root.recipe9
+			text: root.title_list[8]
 		Label:
 			text_size: self.size
-			text: root.recipe10
+			text: root.title_list[9]
 		Button:
 			text: 'Go back to search'
 			on_press:
@@ -140,35 +140,13 @@ class SearchScreen(Screen):
 
 class ResultsScreen(Screen):
 
-	title_list = ListProperty()
-	
-	# it's hard coding time
-	recipe1 = StringProperty()
-	recipe2 = StringProperty()
-	recipe3 = StringProperty()
-	recipe4 = StringProperty()
-	recipe5 = StringProperty()
-	recipe6 = StringProperty()
-	recipe7 = StringProperty()
-	recipe8 = StringProperty()
-	recipe9 = StringProperty()
-	recipe10 = StringProperty()
+	title_list = ListProperty(['','','','','','','','','',''])
 	
 	def show_results(self):
 		global food_input
 		recipe_list = call_api(food_input)
 		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
-		self.recipe1 = self.title_list[0]
-		self.recipe2 = self.title_list[1]
-		self.recipe3 = self.title_list[2]
-		self.recipe4 = self.title_list[3]
-		self.recipe5 = self.title_list[4]
-		self.recipe6 = self.title_list[5]
-		self.recipe7 = self.title_list[6]
-		self.recipe8 = self.title_list[7]
-		self.recipe9 = self.title_list[8]
-		self.recipe10 = self.title_list[9]
 		
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
