@@ -63,7 +63,7 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ListProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 Builder.load_string('''
@@ -85,12 +85,10 @@ Builder.load_string('''
 			multiline: False
 			on_text_validate: 
 				print self.text
-				root.food_search()
-				root.manager.transition.direction = 'left'
-				root.manager.current = 'results'
 
 				
 <ResultsScreen>:
+	on_enter: root.show_results()
 	BoxLayout:
 		Button:
 			text: 'Go back to search'
@@ -99,39 +97,28 @@ Builder.load_string('''
 				root.manager.current = 'search'
 		Button:
 			id: 'result_1'
-			text: root.show_results()
-			on_press:
-				print root.show_results()
-				
+			text: ''
+			on_press: root.show_results()
 ''')
 
-global_food_list = [] #Global list to keep all found recipes without repeated api calls
+food_input = "" #Global variable to keep all found recipes without repeated api calls
 
 class SearchScreen(Screen):
 	
-	food = StringProperty()
-	#def return_text(self):
-		#self.food = self.ids.textbox.text
-		#print self.food
-	
 	def food_search(self):
-		self.food = self.ids.textbox.text
-		recipe_list = call_api(self.food)
-		print get_recipe_title(recipe_list)		
-
-		for food in get_recipe_title(recipe_list):
-			global_food_list.append(food)
-		return get_recipe_title(recipe_list)
-
-
+		global food_input
+		food_input = self.ids.textbox.text
 
 class ResultsScreen(Screen):
+
+	title_list = ListProperty()
+
 	def show_results(self):
-		return str(global_food_list)
-		#food_list = SearchScreen().food_search() #Instantiated method - Obsolete for now, but keep here
-		#self.ids.result_1.text = global_food_list[index]
-
-
+		global food_input
+		recipe_list = call_api(food_input)
+		self.title_list = get_recipe_title(recipe_list)	
+		print self.title_list
+		#self.ids.result_1.text = food_input
 
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
