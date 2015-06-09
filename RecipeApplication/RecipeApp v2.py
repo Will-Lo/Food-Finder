@@ -88,17 +88,16 @@ Builder.load_string('''
 
 				
 <ResultsScreen>:
-	on_enter: root.show_results()
+	on_pre_enter: root.show_results()
 	BoxLayout:
 		Button:
 			text: 'Go back to search'
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'search'
-		Button:
+		Label:
 			id: 'result_1'
-			text: ''
-			on_press: root.show_results()
+			text: str(root.title_list)
 ''')
 
 food_input = "" #Global variable to keep all found recipes without repeated api calls
@@ -118,8 +117,9 @@ class ResultsScreen(Screen):
 		recipe_list = call_api(food_input)
 		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
+		return self.title_list
 		#self.ids.result_1.text = food_input
-
+		
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
 sm.add_widget(ResultsScreen(name='results'))
