@@ -85,6 +85,9 @@ Builder.load_string('''
 			multiline: False
 			on_text_validate: 
 				print self.text
+				root.food_search()
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'results'
 
 				
 <ResultsScreen>:
