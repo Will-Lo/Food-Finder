@@ -64,6 +64,7 @@ kivy.require('1.9.0')
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.stacklayout import StackLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -108,61 +109,61 @@ Builder.load_string('''
 		SmartButton:
 			text: root.title_list[0]
 			on_release: 
-				self.find_ingredient_info(1)
+				self.find_ingredient_info(0)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[1]
 			on_release: 
-				self.find_ingredient_info(2)
+				self.find_ingredient_info(1)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[2]
 			on_release: 
-				self.find_ingredient_info(3)
+				self.find_ingredient_info(2)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[3]
 			on_release: 
-				self.find_ingredient_info(4)
+				self.find_ingredient_info(3)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[4]
 			on_release: 
-				self.find_ingredient_info(5)
+				self.find_ingredient_info(4)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[5]
 			on_release: 
-				self.find_ingredient_info(6)
+				self.find_ingredient_info(5)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[6]
 			on_release: 
-				self.find_ingredient_info(7)
+				self.find_ingredient_info(6)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[7]
 			on_release: 
-				self.find_ingredient_info(8)
+				self.find_ingredient_info(7)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[8]
 			on_release: 
-				self.find_ingredient_info(9)
+				self.find_ingredient_info(8)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		SmartButton:
 			text: root.title_list[9]
 			on_release: 
-				self.find_ingredient_info(10)
+				self.find_ingredient_info(9)
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'ingredients'
 		Button:
@@ -171,23 +172,28 @@ Builder.load_string('''
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'search'
 
+<SmartLabel>:
+	text_size: self.size
+
 <RecipeScreen>:
 	on_pre_enter:
 		root.show_recipe()
-	BoxLayout:
+	FloatLayout:
 		Button:
+			pos_hint:{'center_x':0.1, 'center_y':0.1}
+			size_hint: 0.2,0.1
 			text: 'Go back to results'
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'results'
-		Label:
-			text_size: self.size
-			text: root.ingredients
+		SmartLabel:
+			text: root.ingredient_list[0]
 			
 ''')		
 
 recipe_list = [] #Global variable to keep all found recipes without repeated api calls
 index_choose = 0 #Global variable required to find information of recipe chosen
+
 
 class SearchScreen(Screen):
 	
@@ -198,11 +204,13 @@ class SearchScreen(Screen):
 
 		
 class SmartButton(Button):
+
 	id_num = NumericProperty()
 	
 	def find_ingredient_info(self, id):
 		global index_choose
 		index_choose = id
+		
 		
 class ResultsScreen(Screen):
 
@@ -213,15 +221,18 @@ class ResultsScreen(Screen):
 		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
 
+class SmartLabel(Label):
+	pass
+		
 class RecipeScreen(Screen):
 	
-	ingredients = StringProperty('')
+	ingredient_list = ListProperty([''])
 	
 	def show_recipe(self):
 		global index_choose
 		global recipe_list
-		ingredient_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
-		self.ingredients ='++'.join(ingredient_list)
+		self.ingredient_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
+	
 		
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
