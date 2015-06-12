@@ -199,7 +199,7 @@ Builder.load_string('''
 			text: root.ingredient_list[2]
 		SmartLabel:
 			pos_hint:{'center_x':0.8,'center_y':0.5}
-			text: root.ingredient_list[3] + root.ingredient_list['
+			text: root.ingredient_list[3] 
 			
 			
 ''')		
@@ -252,6 +252,7 @@ sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
 sm.add_widget(ResultsScreen(name='results'))
 sm.add_widget(RecipeScreen(name='ingredients'))
+
 class RecipeApp(App):
 
 	def build(self):
