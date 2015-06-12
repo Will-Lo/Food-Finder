@@ -20,8 +20,7 @@ def get_recipe_title(recipe_list):
 	return recipe_names
 
 
-def choose_recipe(recipe_list):
-	choice = input("Call index # for recipe you like ")
+def choose_recipe(recipe_list, choice):
 	chosen_recipe = recipe_list[choice]
 	return chosen_recipe
 
@@ -64,14 +63,16 @@ import kivy
 kivy.require('1.9.0')
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, ObjectProperty, NumericProperty
-from kivy.uix.screenmanager import ScreenManager, Screen
+
 
 Builder.load_string('''
 <SearchScreen>:
@@ -171,11 +172,18 @@ Builder.load_string('''
 				root.manager.current = 'search'
 
 <RecipeScreen>:
-	Button:
-		text: 'Go back to results'
-		on_press:
-			root.manager.transition.direction = 'right'
-			root.manager.current = 'results'
+	on_pre_enter:
+		root.show_recipe()
+	BoxLayout:
+		Button:
+			text: 'Go back to results'
+			on_press:
+				root.manager.transition.direction = 'right'
+				root.manager.current = 'results'
+		Label:
+			text_size: self.size
+			text: root.ingredients
+			
 ''')		
 
 recipe_list = [] #Global variable to keep all found recipes without repeated api calls
@@ -207,13 +215,14 @@ class ResultsScreen(Screen):
 
 class RecipeScreen(Screen):
 	
-	ingredients = ListProperty([''])
+	ingredients = StringProperty('')
 	
 	def show_recipe(self):
+		global index_choose
 		global recipe_list
-		self.ingredients = get_recipe_ingredients(recipe_list)
-		print self.ingredients
-
+		ingredient_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
+		self.ingredients ='++'.join(ingredient_list)
+		
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
 sm.add_widget(ResultsScreen(name='results'))
