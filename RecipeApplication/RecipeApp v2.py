@@ -70,7 +70,7 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ListProperty, ObjectProperty
+from kivy.properties import StringProperty, ListProperty, ObjectProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 Builder.load_string('''
@@ -96,53 +96,86 @@ Builder.load_string('''
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'results'
 
-<SmartLabel>:
+<SmartButton>:
 	text_size: self.size
-	on_touch_down: 
-		root.id_num = self.id
-		root.find_ingredient_info()
-				
 <ResultsScreen>:
-	on_pre_enter: root.show_results()
+	on_pre_enter: root.show_results()		
 	GridLayout:
 		padding:10
 		cols:4
 		rows:3
-		SmartLabel:
-			id: '1'
+		SmartButton:
 			text: root.title_list[0]
-		SmartLabel:
-			id: '2'
+			on_release: 
+				self.find_ingredient_info(1)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[1]
-		SmartLabel:
-			id: '3'
+			on_release: 
+				self.find_ingredient_info(2)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[2]
-		SmartLabel:
-			id: '4'
+			on_release: 
+				self.find_ingredient_info(3)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[3]
-		SmartLabel:
-			id: '5'
+			on_release: 
+				self.find_ingredient_info(4)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[4]
-		SmartLabel:
-			id: '6'
+			on_release: 
+				self.find_ingredient_info(5)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[5]
-		SmartLabel:
-			id: '7'
+			on_release: 
+				self.find_ingredient_info(6)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[6]
-		SmartLabel:
-			id: '8'
+			on_release: 
+				self.find_ingredient_info(7)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[7]
-		SmartLabel:
-			id: '9'
+			on_release: 
+				self.find_ingredient_info(8)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[8]
-		SmartLabel:
-			id: '10'
+			on_release: 
+				self.find_ingredient_info(9)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
+		SmartButton:
 			text: root.title_list[9]
+			on_release: 
+				self.find_ingredient_info(10)
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'ingredients'
 		Button:
 			text: 'Go back to search'
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'search'
+
+<RecipeScreen>:
+	Button:
+		text: 'Go back to results'
+		on_press:
+			root.manager.transition.direction = 'right'
+			root.manager.current = 'results'
 ''')		
 
 recipe_list = [] #Global variable to keep all found recipes without repeated api calls
@@ -156,13 +189,12 @@ class SearchScreen(Screen):
 		recipe_list = call_api(food_input)
 
 		
-class SmartLabel(Label):
-	ids_num = ObjectProperty()
+class SmartButton(Button):
+	id_num = NumericProperty()
 	
-	def find_ingredient_info(self):
+	def find_ingredient_info(self, id):
 		global index_choose
-		index_choose = self.ids_num
-		print self.id_num
+		index_choose = id
 		
 class ResultsScreen(Screen):
 
@@ -172,10 +204,6 @@ class ResultsScreen(Screen):
 		global recipe_list
 		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
-		
-sm = ScreenManager()
-sm.add_widget(SearchScreen(name='search'))
-sm.add_widget(ResultsScreen(name='results'))
 
 class RecipeScreen(Screen):
 	
@@ -185,7 +213,11 @@ class RecipeScreen(Screen):
 		global recipe_list
 		self.ingredients = get_recipe_ingredients(recipe_list)
 		print self.ingredients
-		
+
+sm = ScreenManager()
+sm.add_widget(SearchScreen(name='search'))
+sm.add_widget(ResultsScreen(name='results'))
+sm.add_widget(RecipeScreen(name='ingredients'))
 class RecipeApp(App):
 
 	def build(self):
