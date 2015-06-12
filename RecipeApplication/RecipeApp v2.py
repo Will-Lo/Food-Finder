@@ -133,27 +133,30 @@ Builder.load_string('''
 				root.manager.current = 'search'
 ''')		
 
-food_input = "" #Global variable to keep all found recipes without repeated api calls
+recipe_list = [] #Global variable to keep all found recipes without repeated api calls
 
 class SearchScreen(Screen):
 	
 	def food_search(self):
-		global food_input
+		global recipe_list
 		food_input = self.ids.textbox.text
+		recipe_list = call_api(food_input)
 
 class ResultsScreen(Screen):
 
 	title_list = ListProperty(['','','','','','','','','',''])
 	
 	def show_results(self):
-		global food_input
-		recipe_list = call_api(food_input)
+		global recipe_list
 		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
 		
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
 sm.add_widget(ResultsScreen(name='results'))
+
+class RecipeScreen(Screen):
+	pass
 	
 	
 class RecipeApp(App):
