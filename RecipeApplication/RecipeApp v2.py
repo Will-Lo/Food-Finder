@@ -52,7 +52,13 @@ def get_image(recipe_list):
 		recipe = recipe_title['recipe']
 		image_list.append(recipe['image'])
 	return image_list
-
+	
+def get_url(recipe_list):
+	url_list = []
+	for recipe_title in recipe_list:
+		recipe = recipe_title['recipe']
+		url_list.append(recipe['url'])
+	return url_list
 
 import kivy
 kivy.require('1.9.0')
@@ -131,6 +137,8 @@ Builder.load_string('''
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'search'
+				
+
 ''')		
 
 recipe_list = [] #Global variable to keep all found recipes without repeated api calls
