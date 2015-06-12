@@ -60,10 +60,11 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.app import App
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import StringProperty, ListProperty, ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 Builder.load_string('''
@@ -89,6 +90,11 @@ Builder.load_string('''
 				root.manager.transition.direction = 'left'
 				root.manager.current = 'results'
 
+<SmartLabel>:
+	text_size: self.size
+	on_touch_down: 
+		root.id_num = self.id
+		root.find_ingredient_info()
 				
 <ResultsScreen>:
 	on_pre_enter: root.show_results()
@@ -96,44 +102,46 @@ Builder.load_string('''
 		padding:10
 		cols:4
 		rows:3
-		Label:
-			text_size: self.size
+		SmartLabel:
+			root.ids_num: 0
 			text: root.title_list[0]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '2'
 			text: root.title_list[1]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '3'
 			text: root.title_list[2]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '4'
 			text: root.title_list[3]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '5'
 			text: root.title_list[4]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '6'
 			text: root.title_list[5]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '7'
 			text: root.title_list[6]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '8'
 			text: root.title_list[7]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '9'
 			text: root.title_list[8]
-		Label:
-			text_size: self.size
+		SmartLabel:
+			id: '10'
 			text: root.title_list[9]
 		Button:
 			text: 'Go back to search'
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'search'
+
 ''')		
 
 recipe_list = [] #Global variable to keep all found recipes without repeated api calls
+index_choose = 0 #Global variable required to find information of recipe chosen
 
 class SearchScreen(Screen):
 	
@@ -142,6 +150,15 @@ class SearchScreen(Screen):
 		food_input = self.ids.textbox.text
 		recipe_list = call_api(food_input)
 
+		
+class SmartLabel(Label):
+	ids_num = ObjectProperty()
+	
+	def find_ingredient_info(self):
+		global index_choose
+		index_choose = self.ids_num
+		print self.id_num
+		
 class ResultsScreen(Screen):
 
 	title_list = ListProperty(['','','','','','','','','',''])
@@ -156,9 +173,14 @@ sm.add_widget(SearchScreen(name='search'))
 sm.add_widget(ResultsScreen(name='results'))
 
 class RecipeScreen(Screen):
-	pass
 	
+	ingredients = ListProperty([''])
 	
+	def show_recipe(self):
+		global recipe_list
+		self.ingredients = get_recipe_ingredients(recipe_list)
+		print self.ingredients
+		
 class RecipeApp(App):
 
 	def build(self):
