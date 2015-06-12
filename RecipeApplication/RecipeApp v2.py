@@ -33,7 +33,8 @@ def get_recipe_ingredients(chosen_recipe):
 		food_info = item['food']
 		units = item['measure']
 		amount = str(item['quantity']) + " " + str(units['label'])
-		ingredient_info.update({food_info['label']: amount})
+		food = food_info['label']
+		ingredient_info.update({food: amount})
 	return ingredient_info
 
 
@@ -173,6 +174,7 @@ Builder.load_string('''
 				root.manager.current = 'search'
 
 <SmartLabel>:
+	size_hint: 0.4, 0.1
 	text_size: self.size
 
 <RecipeScreen>:
@@ -180,14 +182,25 @@ Builder.load_string('''
 		root.show_recipe()
 	FloatLayout:
 		Button:
-			pos_hint:{'center_x':0.1, 'center_y':0.1}
-			size_hint: 0.2,0.1
+			pos_hint:{'center_x':0.2, 'center_y':0.1}
+			size_hint: 0.4,0.2
 			text: 'Go back to results'
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'results'
 		SmartLabel:
+			pos_hint:{'center_x':0.8, 'center_y':0.8}
 			text: root.ingredient_list[0]
+		SmartLabel:
+			pos_hint:{'center_x':0.8,'center_y':0.7}
+			text: root.ingredient_list[1]
+		SmartLabel:
+			pos_hint:{'center_x':0.8,'center_y':0.6}
+			text: root.ingredient_list[2]
+		SmartLabel:
+			pos_hint:{'center_x':0.8,'center_y':0.5}
+			text: root.ingredient_list[3] + root.ingredient_list['
+			
 			
 ''')		
 
@@ -226,12 +239,13 @@ class SmartLabel(Label):
 		
 class RecipeScreen(Screen):
 	
-	ingredient_list = ListProperty([''])
+	ingredient_list = ListProperty(['','','','','','','','','','','','','','','',''])
 	
 	def show_recipe(self):
 		global index_choose
 		global recipe_list
 		self.ingredient_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
+		print self.ingredient_list
 	
 		
 sm = ScreenManager()
