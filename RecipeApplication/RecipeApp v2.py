@@ -28,14 +28,15 @@ def choose_recipe(recipe_list, choice):
 def get_recipe_ingredients(chosen_recipe):
 	r = chosen_recipe['recipe']
 	ingredient_list = r['ingredients']
-	ingredient_info = {}
+	ingredient_info = []
+	food_amount = []
 	for item in ingredient_list:
 		food_info = item['food']
 		units = item['measure']
-		amount = str(item['quantity']) + " " + str(units['label'])
-		food = food_info['label']
-		ingredient_info.update({food: amount})
-	return ingredient_info
+		food_amount = str(item['quantity']) + " " + str(units['label'])
+		ingredient_info = food_info['label']
+		
+	return ingredient_info, food_amount
 
 
 def get_difficulty(recipe_list):
@@ -199,7 +200,7 @@ Builder.load_string('''
 			text: root.ingredient_list[2]
 		SmartLabel:
 			pos_hint:{'center_x':0.8,'center_y':0.5}
-			text: root.ingredient_list[3] + root.ingredient_list['
+			text: root.ingredient_list[3] + root.ingredient_list
 			
 			
 ''')		
