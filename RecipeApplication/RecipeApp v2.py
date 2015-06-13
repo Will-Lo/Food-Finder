@@ -233,7 +233,6 @@ class SrollLabels(FloatLayout):
 	pass
 		
 class RecipeScreen(Screen):
-	
 	ingredient_list = ListProperty(['','','','','','','','','','','','','','','',''])
 	amount_list = ListProperty(['','','','','','','','','','','','','','','',''])
 	box = ObjectProperty(None)
@@ -253,7 +252,7 @@ class RecipeScreen(Screen):
 				text_size = (400,None),
 				text=self.ingredient_list[i] + " " + self.amount_list[i],
 				size_hint=(0.2,0.1),
-				pos_hint={'center_x':0.8,'center_y': 0.9-i*0.1}
+				pos_hint={'center_x':0.8,'center_y': 0.9-i*0.075}
 				))
 
 		
