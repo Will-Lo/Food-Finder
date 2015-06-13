@@ -27,15 +27,18 @@ def choose_recipe(recipe_list):
 
 
 def get_recipe_ingredients(chosen_recipe):
-   r = chosen_recipe['recipe']
-   ingredient_list = r['ingredients']
-   ingredient_info = {}
-   for item in ingredient_list:
-       food_info = item['food']
-       units = item['measure']
-       amount = str(item['quantity']) +" "+ str(units['label'])
-       ingredient_info.update({food_info['label']:amount})
-   return ingredient_info
+	r = chosen_recipe['recipe']
+	ingredient_list = r['ingredients']
+	ingredient_info = []
+	food_amount = []
+	for item in ingredient_list:
+		food_info = item['food']
+		units = item['measure']
+		food = str(item['quantity']) + " " + str(units['label'])
+		ingredient_info.append(food_info['label'])
+		food_amount.append(food)
+		
+	return ingredient_info, food_amount
 
 
 def get_difficulty(recipe_list):

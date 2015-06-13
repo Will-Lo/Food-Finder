@@ -33,10 +33,12 @@ def get_recipe_ingredients(chosen_recipe):
 	for item in ingredient_list:
 		food_info = item['food']
 		units = item['measure']
-		food_amount = str(item['quantity']) + " " + str(units['label'])
-		ingredient_info = food_info['label']
+		food = str(item['quantity']) + " " + str(units['label'])
+		ingredient_info.append(food_info['label'])
+		food_amount.append(food)
 		
 	return ingredient_info, food_amount
+
 
 
 def get_difficulty(recipe_list):
@@ -67,15 +69,17 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.stacklayout import StackLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.scrollview import ScrollView
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, ObjectProperty, NumericProperty
-
+from kivy.factory import Factory
 
 Builder.load_string('''
 <SearchScreen>:
@@ -175,35 +179,25 @@ Builder.load_string('''
 				root.manager.current = 'search'
 
 <SmartLabel>:
-	size_hint: 0.4, 0.1
+	size_hint: 0.4, 0.2
 	text_size: self.size
 
 <RecipeScreen>:
 	on_pre_enter:
 		root.show_recipe()
+		root.build_labels()
+	box:box
 	FloatLayout:
 		Button:
 			pos_hint:{'center_x':0.2, 'center_y':0.1}
-			size_hint: 0.4,0.2
+			size_hint: 0.4,0.1
 			text: 'Go back to results'
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'results'
-		SmartLabel:
-			pos_hint:{'center_x':0.8, 'center_y':0.8}
-			text: root.ingredient_list[0]
-		SmartLabel:
-			pos_hint:{'center_x':0.8,'center_y':0.7}
-			text: root.ingredient_list[1]
-		SmartLabel:
-			pos_hint:{'center_x':0.8,'center_y':0.6}
-			text: root.ingredient_list[2]
-		SmartLabel:
-			pos_hint:{'center_x':0.8,'center_y':0.5}
-			text: root.ingredient_list[3]
-			
-			
-''')		
+		FloatLayout:
+			id:box
+''')
 
 recipe_list = [] #Global variable to keep all found recipes without repeated api calls
 index_choose = 0 #Global variable required to find information of recipe chosen
@@ -235,19 +229,33 @@ class ResultsScreen(Screen):
 		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
 
-class SmartLabel(Label):
+class SrollLabels(FloatLayout):
 	pass
 		
 class RecipeScreen(Screen):
 	
 	ingredient_list = ListProperty(['','','','','','','','','','','','','','','',''])
+	amount_list = ListProperty(['','','','','','','','','','','','','','','',''])
+	box = ObjectProperty(None)
 	
 	def show_recipe(self):
 		global index_choose
 		global recipe_list
-		self.ingredient_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
+		i_list, a_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
+		for x in range(len(i_list)):
+			self.ingredient_list.insert(0, i_list[x])
+			self.amount_list.insert(0, a_list[x])
 		print self.ingredient_list
-	
+
+	def build_labels(self, *args):
+		for i in range(len(self.ingredient_list)):
+			self.box.add_widget(Label(
+				text_size = (400,None),
+				text=self.ingredient_list[i] + " " + self.amount_list[i],
+				size_hint=(0.2,0.1),
+				pos_hint={'center_x':0.8,'center_y': 0.9-i*0.1}
+				))
+
 		
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
