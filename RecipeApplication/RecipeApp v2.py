@@ -195,6 +195,7 @@ Builder.load_string('''
 			on_press:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'results'
+				root.wipe_list()
 		FloatLayout:
 			id:box
 ''')
@@ -233,8 +234,8 @@ class SrollLabels(FloatLayout):
 	pass
 		
 class RecipeScreen(Screen):
-	ingredient_list = ListProperty(['','','','','','','','','','','','','','','',''])
-	amount_list = ListProperty(['','','','','','','','','','','','','','','',''])
+	ingredient_list = ListProperty([])
+	amount_list = ListProperty([])
 	box = ObjectProperty(None)
 	
 	def show_recipe(self):
@@ -242,8 +243,8 @@ class RecipeScreen(Screen):
 		global recipe_list
 		i_list, a_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
 		for x in range(len(i_list)):
-			self.ingredient_list.insert(0, i_list[x])
-			self.amount_list.insert(0, a_list[x])
+			self.ingredient_list.append(i_list[x])
+			self.amount_list.append(a_list[x])
 		print self.ingredient_list
 
 	def build_labels(self, *args):
@@ -254,7 +255,10 @@ class RecipeScreen(Screen):
 				size_hint=(0.2,0.1),
 				pos_hint={'center_x':0.8,'center_y': 0.9-i*0.075}
 				))
-
+	
+	def wipe_list(self):
+		self.ingredient_list[:] = []
+		self.amount_list[:] = []
 		
 sm = ScreenManager()
 sm.add_widget(SearchScreen(name='search'))
