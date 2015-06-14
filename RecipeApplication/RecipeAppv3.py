@@ -187,7 +187,9 @@ Builder.load_string('''
 	on_pre_enter:
 		root.show_recipe()
 		root.build_labels()
+		root.build_url()
 	box:box
+	
 	FloatLayout:
 		Button:
 			pos_hint:{'center_x':0.2, 'center_y':0.1}
@@ -202,6 +204,7 @@ Builder.load_string('''
 			size_hint: 0.4, 0.1
 			text: 'Ingredients'
 			font_size: 22
+			
 		FloatLayout:
 			id:box
 
@@ -262,6 +265,7 @@ class RecipeScreen(Screen):
 	amount_list = ListProperty([])
 	box = ObjectProperty(None)
 	labels = ListProperty([])
+	url_label = ListProperty([])
 	
 	def show_recipe(self):
 		global index_choose
@@ -272,6 +276,14 @@ class RecipeScreen(Screen):
 			self.amount_list.append(a_list[x])
 		print self.ingredient_list
 
+	def build_url(self, *args):
+		global index_choose
+		global recipe_list
+		url = str(get_url(recipe_list)[index_choose])
+		self.url_label.append(Label(text_size= (200,None), text= url, pos_hint= {'center_x':0.2, 'center_y':0.8}, size_hint= (0.1,0.1), color = (0,0.4,1,1)))
+		self.box.add_widget(self.url_label[0])
+	
+	
 	def build_labels(self, *args):
 		
 		self.labels = [Label(
