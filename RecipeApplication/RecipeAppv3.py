@@ -193,10 +193,15 @@ Builder.load_string('''
 			pos_hint:{'center_x':0.2, 'center_y':0.1}
 			size_hint: 0.4,0.1
 			text: 'Go back to results'
-			on_press:
+			on_release:
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'results'
 				root.wipe_list()
+		Label:
+			pos_hint:{'center_x':0.7, 'center_y':0.9}
+			size_hint: 0.4, 0.1
+			text: 'Ingredients'
+			font_size: 22
 		FloatLayout:
 			id:box
 
@@ -272,9 +277,9 @@ class RecipeScreen(Screen):
 		self.labels = [Label(
 			name='Ingredient {}'.format(i),
 			text_size = (400,None),
-			text=self.ingredient_list[i] + " " + self.amount_list[i],
+			text="%s ) " %(i+1) + self.ingredient_list[i] + " " + self.amount_list[i],
 			size_hint=(0.2,0.1),
-			pos_hint={'center_x':0.8,'center_y': 0.9-i*0.075}
+			pos_hint={'center_x':0.7,'center_y': 0.8-i*0.075}
 			)for i in range(len(self.ingredient_list))]
 		for i in range(len(self.ingredient_list)):
 			self.box.add_widget(self.labels[i])
