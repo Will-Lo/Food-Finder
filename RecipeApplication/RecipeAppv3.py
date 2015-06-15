@@ -56,12 +56,20 @@ def get_image(recipe_list):
 		image_list.append(recipe['image'])
 	return image_list
 
+def get_one_image(chosen_recipe):
+	r = chosen_recipe['recipe']
+	image_link = r['image']
+	return image_link
+
 def get_url(recipe_list):
 	url_list = []
 	for recipe_title in recipe_list:
 		recipe = recipe_title['recipe']
 		url_list.append(recipe['url'])
 	return url_list
+
+def open_url(url):
+	webbrowser.open(str(url))
 
 import kivy
 kivy.require('1.9.0')
@@ -80,7 +88,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, ObjectProperty, NumericProperty
 from kivy.factory import Factory
-from kivy.uix.image import AsyncImage
+from kivy.uix.image import Image
+import webbrowser
 
 Builder.load_string('''
 <SearchScreen>:
@@ -206,7 +215,10 @@ Builder.load_string('''
 			size_hint: 0.4, 0.1
 			text: 'Ingredients'
 			font_size: 22	
-		
+		AsyncImage:
+			pos_hint:{'center_x':0.2, 'center_y':0.5}
+			source: root.image
+			
 		FloatLayout:
 			id:box
 
@@ -268,7 +280,7 @@ class RecipeScreen(Screen):
 	box = ObjectProperty(None)
 	labels = ListProperty([])
 	url_label = ListProperty([])
-	image_display = ListProperty([])
+	image = StringProperty()
 	
 	def show_recipe(self):
 		global index_choose
@@ -289,9 +301,7 @@ class RecipeScreen(Screen):
 	def build_image(self):
 		global index_choose
 		global recipe_list
-		image_url = get_image(recipe_list)[index_choose]
-		self.image_display.append(AsyncImage(source= 'image_url', pos_hint= {'center_x':0.2, 'center_y':0.5}))
-		self.box.add_widget(self.image_display[0])
+		self.image = get_one_image(choose_recipe(recipe_list,index_choose))
 	
 	def build_labels(self, *args):
 		
@@ -312,10 +322,6 @@ class RecipeScreen(Screen):
 		self.ingredient_list[:] = []
 		self.amount_list[:] = []
 		self.url_label[:] = []
-		self.image_display[:] = []
-
-class Recipe_Image(AsyncImage):
-	pass
 		
 class MainWidget(FloatLayout):
 	manager = ObjectProperty(None)
