@@ -197,7 +197,6 @@ Builder.load_string('''
 	on_pre_enter:
 		root.show_recipe()
 		root.build_labels()
-		root.build_url()
 		root.build_image()
 	box:box
 	
@@ -210,6 +209,14 @@ Builder.load_string('''
 				root.manager.transition.direction = 'right'
 				root.manager.current = 'results'
 				root.wipe_list()
+		Button:
+			pos_hint:{'center_x': 0.2, 'center_y':0.8}
+			size_hint: 0.4, 0.1
+			text: 'Open recipe instructions'
+			on_release:
+				root.build_url()
+			
+		
 		Label:
 			pos_hint:{'center_x':0.7, 'center_y':0.9}
 			size_hint: 0.4, 0.1
@@ -295,9 +302,8 @@ class RecipeScreen(Screen):
 		global index_choose
 		global recipe_list
 		url = str(get_url(recipe_list)[index_choose])
-		self.url_label.append(Label(text_size= (200,None), text= url, pos_hint= {'center_x':0.2, 'center_y':0.8}, size_hint= (0.1,0.1), color = (0,0.4,1,1)))
-		self.box.add_widget(self.url_label[0])
-	
+		webbrowser.open(url)
+		
 	def build_image(self):
 		global index_choose
 		global recipe_list
@@ -318,7 +324,6 @@ class RecipeScreen(Screen):
 	def wipe_list(self):
 		for i in range(len(self.ingredient_list)):
 			self.box.remove_widget(self.labels[i])
-		self.box.remove_widget(self.url_label[0])
 		self.ingredient_list[:] = []
 		self.amount_list[:] = []
 		self.url_label[:] = []
