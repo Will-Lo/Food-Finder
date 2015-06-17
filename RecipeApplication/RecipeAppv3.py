@@ -198,7 +198,7 @@ Builder.load_string('''
 		root.show_recipe()
 		root.build_labels()
 		root.build_image()
-	box:box
+
 	FloatLayout:
 		Button:
 			pos_hint:{'center_x':0.2, 'center_y':0.1}
@@ -224,8 +224,7 @@ Builder.load_string('''
 		AsyncImage:
 			pos_hint:{'center_x':0.2, 'center_y':0.5}
 			source: root.image	
-		FloatLayout:
-			id: box
+
 
 <MainWidget>:
 	screen_manager: screen_manager
@@ -284,13 +283,12 @@ class ScrollLabels(ScrollView):
 class RecipeScreen(Screen):
 	ingredient_list = ListProperty([])
 	amount_list = ListProperty([])
-	box = ObjectProperty(None)
 	labels = ListProperty([])
 	url_label = ListProperty([])
 	image = StringProperty()
-	layout = GridLayout(cols=1, spacing=30, size_hint=(1,None))
+	layout = GridLayout(cols=1, spacing=25, size_hint=(1,None))
 	layout.bind(minimum_height=layout.setter('height'))
-	layout.bind(minimum_width=layout.setter('width'))
+	#layout.bind(minimum_width=layout.setter('width'))
 	def show_recipe(self):
 		global index_choose
 		global recipe_list
@@ -314,7 +312,7 @@ class RecipeScreen(Screen):
 	def build_labels(self, *args):
 		self.labels = [Label(
 			name='Ingredient {}'.format(i),
-			text_size = (400,None),
+			text_size = (400,15),
 			text="%s ) " %(i+1) + self.ingredient_list[i] + " " + self.amount_list[i],
 			size=(100,50)
 			)for i in range(len(self.ingredient_list))]
