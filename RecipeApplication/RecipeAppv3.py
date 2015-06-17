@@ -75,7 +75,7 @@ def get_recipe_ingredients(chosen_recipe):
 		# appends the name of the ingredient in one list, and the units and measure in another list
 		ingredient_info.append(food_info['label'])
 		food_amount.append(food)
-	return food_info, food_amount
+	return ingredient_info, food_amount
 
 
 
@@ -133,14 +133,6 @@ def get_url(recipe_list):
 		url_list.append(recipe['url'])
 	return url_list
 
-def open_url(url):
-	"""
-	Opens the recipe url in a web browser
-	
-	:param url: str - url to a given recipe
-	:return: None
-	"""
-	webbrowser.open(str(url))
 
 import kivy
 kivy.require('1.9.0')
@@ -378,8 +370,6 @@ class ResultsScreen(Screen):
 			self.title_list.insert(0,item)
 		print self.title_list
 
-class SrollLabels(FloatLayout):
-	pass
 		
 class RecipeScreen(Screen):
 	ingredient_list = ListProperty([])
@@ -395,7 +385,7 @@ class RecipeScreen(Screen):
 		
 		:return: None
 		"""
-		
+
 		global index_choose
 		global recipe_list
 		i_list, a_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
@@ -469,7 +459,7 @@ class RecipeApp(App):
 		"""
 		Runs the app
 		
-		:return: None
+		:return: MainWidget() - Class which msnages entire application
 		"""
 		
 		return MainWidget()
