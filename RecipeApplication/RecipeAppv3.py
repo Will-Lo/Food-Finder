@@ -10,11 +10,16 @@ def call_api(ingredient):
 	:return: recipe_list: dict - matching search results
 	"""
 	
+	# credentials for the api
 	app_id = '089eb38f'
 	app_key = '1c85c101570a08bde8d50b217d7ca2d9'
+	
 	info = {'q': ingredient, 'app_id': app_id, 'app_key': app_key}
+	# calls the api
 	response = requests.post('https://api.edamam.com/search', data=info)
+	# uses json to decode the object from the website
 	j = json.loads(response.text)
+	# 'hits' is the key for all data related to the recipe
 	recipe_list = j['hits']
 	return recipe_list
 
@@ -28,8 +33,11 @@ def get_recipe_title(recipe_list):
 	"""
 	
 	recipe_names = []
-	for title in recipe_list:
-		recipe = title['recipe']
+	
+	# loops through the list of recipes
+	for item in recipe_list:
+		recipe = item['recipe']
+		# adds the titles of the recipe to a list
 		recipe_names.append(recipe['label'])
 	return recipe_names
 
@@ -59,14 +67,15 @@ def get_recipe_ingredients(chosen_recipe):
 	ingredient_list = r['ingredients']
 	ingredient_info = []
 	food_amount = []
+	# loops through every ingredient in the ingredient list
 	for item in ingredient_list:
 		food_info = item['food']
 		units = item['measure']
 		food = str(item['quantity']) + " " + str(units['label'])
+		# appends the name of the ingredient in one list, and the units and measure in another list
 		ingredient_info.append(food_info['label'])
 		food_amount.append(food)
-		
-	return ingredient_info, food_amount
+	return food_info, food_amount
 
 
 
@@ -106,6 +115,7 @@ def get_one_image(chosen_recipe):
 	:return: image_link: string - the image url of one recipe
 	"""
 	
+	# used to find only 1 image faster
 	r = chosen_recipe['recipe']
 	image_link = r['image']
 	return image_link
@@ -155,6 +165,11 @@ import webbrowser
 Builder.load_string('''
 <SearchScreen>:
 	FloatLayout:
+		Label:
+			text: 'Search for a recipe by inputting ingredients:'
+			font_size: 25
+			pos_hint: {'center_x': 0.5, 'center_y': 0.85}
+			size_hint: 0.6,0.2
 		Button:
 			id: searchbutton
 			text: 'Search!'
@@ -323,7 +338,9 @@ class SearchScreen(Screen):
 		"""
 		
 		global recipe_list
+		# sets search query to be equal to the text in the textbox to be equal
 		food_input = self.ids.textbox.text
+		# sets a global variable to be equal to the api call of the ingredient
 		recipe_list = call_api(food_input)
 
 		
@@ -339,6 +356,7 @@ class SmartButton(Button):
 		:return: None
 		"""
 		
+		# so the program knows which button is pressed to open the correct ingredients
 		global index_choose
 		index_choose = id
 		
@@ -356,6 +374,7 @@ class ResultsScreen(Screen):
 		global recipe_list
 		titles = get_recipe_title(recipe_list)
 		for item in titles:
+			# inserts an item into the beginning of the list in case there aren't enough search results
 			self.title_list.insert(0,item)
 		print self.title_list
 
@@ -395,6 +414,7 @@ class RecipeScreen(Screen):
 		global index_choose
 		global recipe_list
 		url = str(get_url(recipe_list)[index_choose])
+		# opens the web page connected to the recipe
 		webbrowser.open(url)
 		
 	def build_image(self):
@@ -415,6 +435,7 @@ class RecipeScreen(Screen):
 		:return: None
 		"""
 		
+		# adds labels to the screen equal to the number of ingredients specified in the recipe
 		self.labels = [Label(
 			name='Ingredient {}'.format(i),
 			text_size = (400,None),
@@ -431,6 +452,7 @@ class RecipeScreen(Screen):
 		
 		:return: None
 		"""
+		# deletes all data when back button is pressed so data doesn't conflict with another recipe
 		for i in range(len(self.ingredient_list)):
 			self.box.remove_widget(self.labels[i])
 		self.ingredient_list[:] = []
