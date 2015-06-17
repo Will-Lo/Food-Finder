@@ -459,7 +459,7 @@ class RecipeApp(App):
 		"""
 		Runs the app
 		
-		:return: MainWidget() - Class which msnages entire application
+		:return: MainWidget() - Class which manages entire application
 		"""
 		
 		return MainWidget()
