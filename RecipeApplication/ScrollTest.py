@@ -86,9 +86,15 @@ from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ListProperty, ObjectProperty, NumericProperty
+from kivy.properties import StringProperty, ListProperty, ObjectProperty, NumericProperty, OptionProperty
 from kivy.factory import Factory
 from kivy.uix.image import Image
+from kivy.uix.stencilview import StencilView
+from functools import partial
+from kivy.animation import Animation
+from kivy.config import Config 
+from kivy.metrics import sp
+from kivy.effects.dampedscroll import DampedScrollEffect
 import webbrowser
 
 Builder.load_string('''
@@ -198,7 +204,7 @@ Builder.load_string('''
 		root.show_recipe()
 		root.build_labels()
 		root.build_image()
-	box:box
+	
 	FloatLayout:
 		Button:
 			pos_hint:{'center_x':0.2, 'center_y':0.1}
@@ -213,19 +219,25 @@ Builder.load_string('''
 			size_hint: 0.4, 0.1
 			text: 'Open recipe instructions'
 			on_release:
-				root.build_url()
-			
+				root.build_url()		
 		
 		Label:
 			pos_hint:{'center_x':0.7, 'center_y':0.9}
 			size_hint: 0.4, 0.1
 			text: 'Ingredients'
 			font_size: 22	
+		
 		AsyncImage:
 			pos_hint:{'center_x':0.2, 'center_y':0.5}
-			source: root.image	
-		FloatLayout:
-			id: box
+			source: root.image
+		
+		ScrollLabels:
+			text: str('root.BigLabel.text')
+			Label:
+				text: self.text
+		
+<ScrollLabels>:
+	text_size: self.size
 
 <MainWidget>:
 	screen_manager: screen_manager
@@ -273,13 +285,11 @@ class ResultsScreen(Screen):
 	
 	def show_results(self):
 		global recipe_list
-		titles = get_recipe_title(recipe_list)
-		for item in titles:
-			self.title_list.insert(0,item)
+		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
 
 class ScrollLabels(ScrollView):
-	pass
+	text = StringProperty('')
 		
 class RecipeScreen(Screen):
 	ingredient_list = ListProperty([])
@@ -288,9 +298,8 @@ class RecipeScreen(Screen):
 	labels = ListProperty([])
 	url_label = ListProperty([])
 	image = StringProperty()
-	layout = GridLayout(cols=1, spacing=30, size_hint=(1,None))
-	layout.bind(minimum_height=layout.setter('height'))
-	layout.bind(minimum_width=layout.setter('width'))
+	BigLabel = Label(text='',size_hint=(0.2,0.1), pos_hint={'center_x':0.7,'center_y': 0.8}, text_size = (400,None))
+	
 	def show_recipe(self):
 		global index_choose
 		global recipe_list
@@ -315,21 +324,23 @@ class RecipeScreen(Screen):
 		self.labels = [Label(
 			name='Ingredient {}'.format(i),
 			text_size = (400,None),
-			text="%s ) " %(i+1) + self.ingredient_list[i] + " " + self.amount_list[i],
-			size=(100,50)
+			text="%s ) " %(i+1) + self.ingredient_list[i] + " " + self.amount_list[i] + " " + "\n",
+			size_hint=(0.2,0.1),
+			pos_hint={'center_x':0.7,'center_y': 0.8-i*0.075}
 			)for i in range(len(self.ingredient_list))]
 		for i in range(len(self.ingredient_list)):
-			self.layout.add_widget(self.labels[i])
-		scrollview1 = ScrollView(size_hint=(None,None), size=(400,400), pos_hint={'x':0.50, 'y':0.1}, bar_width='5dp')
-		scrollview1.add_widget(self.layout)
-		self.add_widget(scrollview1)
-		
-	def wipe_list(self):
+			self.BigLabel.text += self.labels[i].text
+		#root = ScrollView(size_hint=(1,None), size=(400,400), pos_hint={'center_x':0.7,'center_y': 0.8})
+		#root.add_widget(self.BigLabel)
+		print self.BigLabel.text
+
+	def wipe_list(self):	
 		for i in range(len(self.ingredient_list)):
 			self.box.remove_widget(self.labels[i])
 		self.ingredient_list[:] = []
 		self.amount_list[:] = []
 		self.url_label[:] = []
+
 		
 class MainWidget(FloatLayout):
 	manager = ObjectProperty(None)
