@@ -3,6 +3,13 @@ import json
 
 
 def call_api(ingredient):
+	"""
+	Calls the api with a certain ingredient
+	
+	:param ingredient: string - desired ingredient
+	:return: recipe_list: dict - matching search results
+	"""
+	
 	app_id = '089eb38f'
 	app_key = '1c85c101570a08bde8d50b217d7ca2d9'
 	info = {'q': ingredient, 'app_id': app_id, 'app_key': app_key}
@@ -13,6 +20,13 @@ def call_api(ingredient):
 
 
 def get_recipe_title(recipe_list):
+	"""
+	Gets the title of the recipe
+	
+	:param recipe_list: dict - matching search results
+	:return: recipe_names: list - recipe titles
+	"""
+	
 	recipe_names = []
 	for title in recipe_list:
 		recipe = title['recipe']
@@ -21,11 +35,26 @@ def get_recipe_title(recipe_list):
 
 
 def choose_recipe(recipe_list, choice):
+	"""
+	Chooses a desired recipe
+	
+	:param recipe_list: dict - matching search results
+	:param choice: int - desired index of chosen recipe
+	:return: chosen_recipe: dict - the dictionary of desired recipe
+	"""
+	
 	chosen_recipe = recipe_list[choice]
 	return chosen_recipe
 
 
 def get_recipe_ingredients(chosen_recipe):
+	"""
+	Gets the recipe's ingredients 
+	
+	:param chosen_recipe: dict - the dictionary of desired recipe
+	:return: ingredient_info: list - list of ingredients
+	:return: food_amount: list - list of the quantity of ingredients required
+	"""
 	r = chosen_recipe['recipe']
 	ingredient_list = r['ingredients']
 	ingredient_info = []
@@ -42,6 +71,12 @@ def get_recipe_ingredients(chosen_recipe):
 
 
 def get_difficulty(recipe_list):
+	"""
+	Gets the difficulty of the chosen recipe 
+	
+	:param recipe_list: dict - matching search results
+	:return: difficulty_list: list - description of difficulties
+	"""
 	difficulty_list = []
 	for recipe_title in recipe_list:
 		recipe = recipe_title['recipe']
@@ -50,6 +85,13 @@ def get_difficulty(recipe_list):
 
 
 def get_image(recipe_list):
+	"""
+	Gets the image url of the chosen recipe
+	
+	:param recipe_list: dict - matching search results
+	:return: image_list: list - images of recipes
+	"""
+
 	image_list = []
 	for recipe_title in recipe_list:
 		recipe = recipe_title['recipe']
@@ -57,11 +99,24 @@ def get_image(recipe_list):
 	return image_list
 
 def get_one_image(chosen_recipe):
+	"""
+	Gets a specific image of one recipe
+	
+	:param chosen_recipe: dict - the dictionary of the desired recipe
+	:return: image_link: string - the image url of one recipe
+	"""
+	
 	r = chosen_recipe['recipe']
 	image_link = r['image']
 	return image_link
 
 def get_url(recipe_list):
+	"""
+	Gets the url to the recipe page
+	
+	:param recipe_list: dict - matching search results
+	:return: url_list: list - list containing recipe urls
+	"""
 	url_list = []
 	for recipe_title in recipe_list:
 		recipe = recipe_title['recipe']
@@ -69,6 +124,12 @@ def get_url(recipe_list):
 	return url_list
 
 def open_url(url):
+	"""
+	Opens the recipe url in a web browser
+	
+	:param url: str - url to a given recipe
+	:return: None
+	"""
 	webbrowser.open(str(url))
 
 import kivy
@@ -255,6 +316,12 @@ index_choose = 0 #Global variable required to find information of recipe chosen
 class SearchScreen(Screen):
 	
 	def food_search(self):
+		"""
+		Calls api for a search of all recipes containing a given ingredient
+		
+		:return: None
+		"""
+		
 		global recipe_list
 		food_input = self.ids.textbox.text
 		recipe_list = call_api(food_input)
@@ -265,6 +332,13 @@ class SmartButton(Button):
 	id_num = NumericProperty()
 	
 	def find_ingredient_info(self, id):
+		"""
+		Sets the index to find ingredients for a given recipe
+		
+		:param id: int - index chosen
+		:return: None
+		"""
+		
 		global index_choose
 		index_choose = id
 		
@@ -274,6 +348,11 @@ class ResultsScreen(Screen):
 	title_list = ListProperty(['','','','','','','','','',''])
 	
 	def show_results(self):
+		"""
+		Displays and stores the recipe names found 
+		
+		:return: None
+		"""
 		global recipe_list
 		titles = get_recipe_title(recipe_list)
 		for item in titles:
@@ -292,6 +371,12 @@ class RecipeScreen(Screen):
 	image = StringProperty()
 	
 	def show_recipe(self):
+		"""
+		Stores quantity and ingredients into a list
+		
+		:return: None
+		"""
+		
 		global index_choose
 		global recipe_list
 		i_list, a_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
@@ -301,17 +386,34 @@ class RecipeScreen(Screen):
 		print self.ingredient_list
 
 	def build_url(self, *args):
+		"""
+		Makes the web browser open to recipe url
+		
+		:return: None
+		"""
+		
 		global index_choose
 		global recipe_list
 		url = str(get_url(recipe_list)[index_choose])
 		webbrowser.open(url)
 		
 	def build_image(self):
+		"""
+		Picks the image of chosen recipe to display
+		
+		:return: None
+		"""
+		
 		global index_choose
 		global recipe_list
 		self.image = get_one_image(choose_recipe(recipe_list,index_choose))
 	
 	def build_labels(self, *args):
+		"""
+		Displays the ingredients of the recipe
+		
+		:return: None
+		"""
 		
 		self.labels = [Label(
 			name='Ingredient {}'.format(i),
@@ -324,6 +426,11 @@ class RecipeScreen(Screen):
 			self.box.add_widget(self.labels[i])
 
 	def wipe_list(self):
+		"""
+		Wipes lists so no overlap occurs in display
+		
+		:return: None
+		"""
 		for i in range(len(self.ingredient_list)):
 			self.box.remove_widget(self.labels[i])
 		self.ingredient_list[:] = []
@@ -337,6 +444,12 @@ class MainWidget(FloatLayout):
 class RecipeApp(App):
 
 	def build(self):
+		"""
+		Runs the app
+		
+		:return: None
+		"""
+		
 		return MainWidget()
 	
 		
