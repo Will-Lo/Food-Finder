@@ -272,9 +272,7 @@ class ResultsScreen(Screen):
 	
 	def show_results(self):
 		global recipe_list
-		titles = get_recipe_title(recipe_list)
-		for item in titles:
-			self.title_list.insert(0,item)
+		self.title_list = get_recipe_title(recipe_list)	
 		print self.title_list
 
 class ScrollLabels(ScrollView):
