@@ -71,9 +71,9 @@ def get_recipe_ingredients(chosen_recipe):
 	for item in ingredient_list:
 		food_info = item['food']
 		units = item['measure']
-		food = str(item['quantity']) + " " + str(units['label'])
+		food = str(item['quantity']) + " " + str(item['food'])
 		# appends the name of the ingredient in one list, and the units and measure in another list
-		ingredient_info.append(food_info['label'])
+		ingredient_info.append(food_info)
 		food_amount.append(food)
 	return ingredient_info, food_amount
 
