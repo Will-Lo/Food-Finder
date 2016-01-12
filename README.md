@@ -1,3 +1,3 @@
 # Food-API
-A mobile application that can search for recipes.
-Test
+A mobile application built using the Python framework, Kivy.
+It can search for recipes using the Edamam API. 

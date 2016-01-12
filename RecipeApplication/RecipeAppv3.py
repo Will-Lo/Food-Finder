@@ -70,13 +70,11 @@ def get_recipe_ingredients(chosen_recipe):
 	# loops through every ingredient in the ingredient list
 	for item in ingredient_list:
 		food_info = item['food']
-		units = item['measure']
-		food = str(item['quantity']) + " " + str(units['label'])
+		food = item['text']
 		# appends the name of the ingredient in one list, and the units and measure in another list
-		ingredient_info.append(food_info['label'])
-		food_amount.append(food)
-	return ingredient_info, food_amount
-
+		ingredient_info.append(food)
+	return ingredient_info
+	
 
 
 def get_difficulty(recipe_list):
@@ -356,7 +354,6 @@ class SmartButton(Button):
 class ResultsScreen(Screen):
 
 	title_list = ListProperty(['','','','','','','','','',''])
-	
 	def show_results(self):
 		"""
 		Displays and stores the recipe names found 
@@ -365,6 +362,7 @@ class ResultsScreen(Screen):
 		"""
 		global recipe_list
 		titles = get_recipe_title(recipe_list)
+		image_list = get_image(recipe_list)
 		for item in titles:
 			# inserts an item into the beginning of the list in case there aren't enough search results
 			self.title_list.insert(0,item)
@@ -378,21 +376,6 @@ class RecipeScreen(Screen):
 	labels = ListProperty([])
 	url_label = ListProperty([])
 	image = StringProperty()
-	
-	def show_recipe(self):
-		"""
-		Stores quantity and ingredients into a list
-		
-		:return: None
-		"""
-
-		global index_choose
-		global recipe_list
-		i_list, a_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
-		for x in range(len(i_list)):
-			self.ingredient_list.append(i_list[x])
-			self.amount_list.append(a_list[x])
-		print self.ingredient_list
 
 	def build_url(self, *args):
 		"""
@@ -417,6 +400,21 @@ class RecipeScreen(Screen):
 		global index_choose
 		global recipe_list
 		self.image = get_one_image(choose_recipe(recipe_list,index_choose))
+
+	
+	def show_recipe(self):
+		"""	
+		Stores quantity and ingredients into a list
+		
+		:return: None
+		"""
+
+		global index_choose
+		global recipe_list
+		i_list = get_recipe_ingredients(choose_recipe(recipe_list,index_choose))
+		for x in range(len(i_list)):
+			self.ingredient_list.append(i_list[x])
+		print self.ingredient_list
 	
 	def build_labels(self, *args):
 		"""
@@ -429,7 +427,7 @@ class RecipeScreen(Screen):
 		self.labels = [Label(
 			name='Ingredient {}'.format(i),
 			text_size = (400,None),
-			text="%s ) " %(i+1) + self.ingredient_list[i] + " " + self.amount_list[i],
+			text="%s ) " %(i+1) + self.ingredient_list[i] ,
 			size_hint=(0.2,0.1),
 			pos_hint={'center_x':0.7,'center_y': 0.8-i*0.075}
 			)for i in range(len(self.ingredient_list))]
@@ -467,4 +465,4 @@ class RecipeApp(App):
 		
 if __name__=='__main__':
 	RecipeApp().run()
-	
+
